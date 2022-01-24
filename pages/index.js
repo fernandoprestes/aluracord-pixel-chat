@@ -29,6 +29,10 @@ function GlobalStyle() {
       #__next > * {
         flex: 1;
       }
+      #btn span {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 12px;
+      }
       /* ./App fit Height */
     `}</style>
   )
@@ -129,7 +133,9 @@ export default function PaginaInicial() {
                 }
               }}
             />
+
             <Button
+              id="btn"
               type="submit"
               label="Entrar"
               fullWidth
