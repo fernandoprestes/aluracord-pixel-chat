@@ -10,3 +10,38 @@ Começando com React criando área de login no Aluracord, criando tudo do ZERO: 
 - [x] Passar propriedades para components;
 - [x] Customizar o Aluracord usando o Coolors para gerar a paleta de cores.
 - [x] Deploy na Vercel.
+
+### Aula 2: state, novas paginas e navegação SPA vs Tradicional
+
+Como lidar com o state do React e entender melhor o que é uma SPA (Single Page Application).
+
+- [x] Entender melhor o que é um SPA;
+- [x] Conhecer o useState do React;
+```
+const [username, setUsername] = useState('')
+```
+- [x] Como trabalhar com eventos no React onSubmit, onClick;
+```
+  onSubmit={handleSubmit}
+```
+```
+  onChange={event => setUsername(event.target.value)}
+```
+
+- [x] Conhecer o useRouter do next/router;
+
+```
+import { useRouter } from 'next/router'
+
+export function default Home(){
+  const router = useRouter()
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    router.push('/chat')
+  }
+
+  ...
+}
+
+```
