@@ -21,7 +21,7 @@ function Title(props) {
   )
 }
 
-export default function PaginaInicial() {
+export default function Home() {
   const [username, setUsername] = useState('')
   const router = useRouter()
 
