@@ -17,13 +17,17 @@ Como lidar com o state do React e entender melhor o que é uma SPA (Single Page 
 
 - [x] Entender melhor o que é um SPA;
 - [x] Conhecer o useState do React;
+
 ```
 const [username, setUsername] = useState('')
 ```
+
 - [x] Como trabalhar com eventos no React onSubmit, onClick;
+
 ```
   onSubmit={handleSubmit}
 ```
+
 ```
   onChange={event => setUsername(event.target.value)}
 ```
@@ -44,4 +48,15 @@ export function default Home(){
   ...
 }
 
+```
+
+## Aula 3: Chat offline. Aprimorando as habilidades com State
+
+Criar a estrutura do nosso chat e fazer ele funcionar inicialmente sem nenhum Back-End.
+
+- [x] Entender mais de como trabalhar com state no React;
+- [x] Trabalhar com arrays no state;
+
+```
+setMessageList([messages, ...messageList])
 ```
