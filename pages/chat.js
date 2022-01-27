@@ -9,14 +9,22 @@ export default function Chat() {
   function handleNewMessage(e) {
     e.preventDefault
     const messages = {
-      message: message,
-      id: messageList.length,
-      from: 'Alguém'
+      id: (messageList.length * Math.random() * 10000).toFixed(0),
+      from: 'Alguém',
+      message: message
     }
-    console.log('message: ', message)
     setMessageList([messages, ...messageList])
     setMessage('')
-    console.log('list Message: ', messageList)
+  }
+
+  function handleDelete(event) {
+    const idMessage = +event.target.dataset.id
+
+    const newArrMsg = messageList.filter(message => {
+      return message.id != idMessage
+    })
+
+    setMessageList(newArrMsg)
   }
 
   return (
@@ -34,7 +42,9 @@ export default function Chat() {
         boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
         border: '1px solid',
         borderColor: appConfig.theme.colors.primary[800],
-        backgroundColor: appConfig.theme.colors.neutrals[800]
+        backgroundColor: appConfig.theme.colors.neutrals[800],
+        maxWidth: '95%',
+        maxHeight: '95vh'
       }}
     >
       <Header />
@@ -51,7 +61,10 @@ export default function Chat() {
           padding: '16px'
         }}
       >
-        <MessageListRender mensagens={messageList} />
+        <MessageListRender
+          mensagens={messageList}
+          handleDelete={handleDelete}
+        />
 
         <Box
           as="form"
@@ -78,11 +91,15 @@ export default function Chat() {
             }}
           />
           <Button
+            id="btn"
             onClick={handleNewMessage}
             variant="tertiary"
             colorVariant="neutral"
             label="OK"
-            height="100%"
+            styleSheet={{
+              height: '60px',
+              marginBottom: '10px'
+            }}
           />
         </Box>
       </Box>
@@ -113,6 +130,7 @@ function Header() {
           Chat
         </Text>
         <Button
+          id="btn"
           variant="tertiary"
           colorVariant="neutral"
           label="logout"
@@ -123,20 +141,17 @@ function Header() {
   )
 }
 
-function MessageListRender({ mensagens }) {
-  console.log('MessageList', mensagens)
-
+function MessageListRender({ mensagens, handleDelete }) {
   return (
     <Box
       tag="ul"
       styleSheet={{
-        overflowY: 'scroll',
+        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column-reverse',
         flex: 1,
         color: appConfig.theme.colors.neutrals['000'],
-        marginBottom: '16px',
-        maxHeight: '694px'
+        marginBottom: '16px'
       }}
     >
       {mensagens.map(mensagem => {
@@ -148,7 +163,6 @@ function MessageListRender({ mensagens }) {
               borderRadius: '5px',
               padding: '6px',
               marginBottom: '12px',
-              marginRight: '8px',
               fontFamily: 'VT323, monospace',
               fontSize: '1rem',
               hover: {
@@ -158,40 +172,63 @@ function MessageListRender({ mensagens }) {
           >
             <Box
               styleSheet={{
-                marginBottom: '8px'
+                marginBottom: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
               }}
             >
-              <Image
-                styleSheet={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  display: 'inline-block',
-                  marginRight: '8px'
-                }}
-                src={`https://github.com/vanessametonini.png`}
-              />
-              <Text
-                tag="strong"
-                styleSheet={{
-                  fontFamily: 'VT323, monospace',
-                  fontSize: '1.875rem'
-                }}
-              >
-                {mensagem.from}
-              </Text>
-              <Text
-                styleSheet={{
-                  fontSize: '10px',
-                  marginLeft: '8px',
-                  color: appConfig.theme.colors.neutrals[300],
-                  fontFamily: 'VT323, monospace',
-                  fontSize: '1rem'
-                }}
-                tag="span"
-              >
-                {new Date().toLocaleDateString()}
-              </Text>
+              <Box tag="div">
+                <Image
+                  styleSheet={{
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    display: 'inline-block',
+                    marginRight: '8px'
+                  }}
+                  src={`https://github.com/vanessametonini.png`}
+                />
+                <Text
+                  tag="strong"
+                  styleSheet={{
+                    fontFamily: 'VT323, monospace',
+                    fontSize: '1.875rem'
+                  }}
+                >
+                  {mensagem.from}
+                </Text>
+                <Text
+                  styleSheet={{
+                    fontSize: '10px',
+                    marginLeft: '8px',
+                    color: appConfig.theme.colors.neutrals[300],
+                    fontFamily: 'VT323, monospace',
+                    fontSize: '1rem'
+                  }}
+                  tag="span"
+                >
+                  {new Date().toLocaleDateString()}
+                </Text>
+              </Box>
+              <Box tag="div">
+                <Text
+                  tag="span"
+                  data-id={mensagem.id}
+                  onClick={handleDelete}
+                  styleSheet={{
+                    fontSize: '10px',
+                    fontWeight: 'bold',
+                    color: '#FFF',
+                    width: '30px',
+                    height: '0px',
+                    cursor: 'pointer',
+                    marginRight: '10px'
+                  }}
+                >
+                  X
+                </Text>
+              </Box>
             </Box>
             {mensagem.message}
           </Text>
