@@ -60,3 +60,17 @@ Criar a estrutura do nosso chat e fazer ele funcionar inicialmente sem nenhum Ba
 ```
 setMessageList([messages, ...messageList])
 ```
+- [x] Enviar mensagem com o botão
+- [x] Colocar um botão para apagar mensagem
+
+```
+function handleDelete(event) {
+    const idMessage = +event.target.dataset.id
+
+    const newArrMsg = messageList.filter(message => {
+      return message.id != idMessage
+    })
+
+    setMessageList(newArrMsg)
+  }
+```
