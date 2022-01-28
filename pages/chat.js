@@ -2,6 +2,7 @@ import { Box, Text, TextField, Image, Button } from '@skynexui/components'
 import { useEffect, useState } from 'react'
 import appConfig from '../config.json'
 import { createClient } from '@supabase/supabase-js'
+import { Skeleton } from '../components/Skeleton'
 
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -11,6 +12,7 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 export default function Chat() {
   const [message, setMessage] = useState('')
   const [messageList, setMessageList] = useState([])
+  const [loadingSkeleton, setLoadingSkeleton] = useState(true)
 
   useEffect(() => {
     getListMessage()
@@ -23,6 +25,9 @@ export default function Chat() {
       .order('id', { ascending: false })
       .then(({ data }) => {
         setMessageList(data)
+        setTimeout(() => {
+          setLoadingSkeleton(false)
+        }, 800)
       })
   }
 
@@ -90,10 +95,14 @@ export default function Chat() {
           padding: '16px'
         }}
       >
-        <MessageListRender
-          mensagens={messageList}
-          handleDelete={handleDelete}
-        />
+        {loadingSkeleton ? (
+          <Skeleton />
+        ) : (
+          <MessageListRender
+            mensagens={messageList}
+            handleDelete={handleDelete}
+          />
+        )}
 
         <Box
           as="form"
@@ -254,13 +263,20 @@ function MessageListRender({ mensagens, handleDelete }) {
                   data-id={mensagem.id}
                   onClick={handleDelete}
                   styleSheet={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     fontSize: '10px',
                     fontWeight: 'bold',
                     color: appConfig.theme.colors.neutrals['000'],
-                    width: '30px',
-                    height: '0px',
+                    width: '15px',
+                    height: '15px',
                     cursor: 'pointer',
-                    marginRight: '10px'
+                    marginRight: '10px',
+                    borderRadius: '50%',
+                    hover: {
+                      backgroundColor: appConfig.theme.colors.neutrals['400']
+                    }
                   }}
                 >
                   X

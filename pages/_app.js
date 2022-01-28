@@ -37,6 +37,32 @@ function GlobalStyle() {
         font-family: 'Press Start 2P', cursive;
         font-size: 12px;
       }
+      @keyframes animation {
+        0% {
+          background-position: -1000px 0;
+        }
+        100% {
+          background-position: 1000px 0;
+        }
+      }
+
+      .animatedBackground {
+        animation-duration: 2s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: animation;
+        animation-timing-function: linear;
+        background-color: ${appConfig.theme.colors.neutrals[500]};
+        background: linear-gradient(
+          90deg,
+          ${appConfig.theme.colors.neutrals[500]} 0%,
+          ${appConfig.theme.colors.neutrals[700]} 15%,
+          ${appConfig.theme.colors.neutrals[500]} 30%
+        );
+        background-size: 1000px 100px;
+        height: 70px;
+        position: relative;
+      }
       /* ./App fit Height */
     `}</style>
   )
