@@ -27,6 +27,7 @@ export default function Home() {
 
   function handleSubmit(event) {
     event.preventDefault()
+    if (!username) return
     router.push('/chat')
   }
 
@@ -87,6 +88,18 @@ export default function Home() {
               {appConfig.name}
             </Text>
 
+            <Text
+              variant="body3"
+              styleSheet={{
+                fontSize: '12px',
+                marginBottom: '5px',
+                letterSpacing: '1px',
+                fontFamily: 'Press Start 2P, cursive',
+                color: appConfig.theme.colors.neutrals[300],
+              }}
+            >
+              entre com seu usuário do github
+            </Text>
             <TextField
               value={username}
               onChange={event => setUsername(event.target.value)}
@@ -100,7 +113,6 @@ export default function Home() {
                 }
               }}
             />
-
             <Button
               id="btn"
               type="submit"
