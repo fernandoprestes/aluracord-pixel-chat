@@ -1,30 +1,59 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import appConfig from '../config.json'
+import { createClient } from '@supabase/supabase-js'
+
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 export default function Chat() {
   const [message, setMessage] = useState('')
   const [messageList, setMessageList] = useState([])
 
-  function handleNewMessage(e) {
-    e.preventDefault
+  useEffect(() => {
+    getListMessage()
+  }, [])
+
+  function getListMessage() {
+    supabaseClient
+      .from('messages')
+      .select('*')
+      .order('id', { ascending: false })
+      .then(({ data }) => {
+        setMessageList(data)
+      })
+  }
+
+  function sendNewMessage() {
     const messages = {
-      id: (messageList.length * Math.random() * 10000).toFixed(0),
-      from: 'Alguém',
+      from: 'fernandoprestes',
       message: message
     }
-    setMessageList([messages, ...messageList])
+    supabaseClient
+      .from('messages')
+      .insert([messages])
+      .then(({ data }) => {
+        setMessageList([data[0], ...messageList])
+      })
+  }
+
+  function handleNewMessage() {
+    sendNewMessage()
     setMessage('')
   }
 
   function handleDelete(event) {
-    const idMessage = +event.target.dataset.id
+    const idMessage = event.target.dataset.id
 
-    const newArrMsg = messageList.filter(message => {
-      return message.id != idMessage
-    })
-
-    setMessageList(newArrMsg)
+    supabaseClient
+      .from('messages')
+      .delete()
+      .match({ id: idMessage })
+      .then(({ data }) => {
+        getListMessage()
+      })
   }
 
   return (
@@ -87,7 +116,8 @@ export default function Chat() {
               padding: '6px 8px',
               backgroundColor: appConfig.theme.colors.neutrals[800],
               marginRight: '12px',
-              color: appConfig.theme.colors.neutrals[200]
+              color: appConfig.theme.colors.neutrals[200],
+              fontSize: '1.275rem'
             }}
           />
           <Button
@@ -178,16 +208,23 @@ function MessageListRender({ mensagens, handleDelete }) {
                 justifyContent: 'space-between'
               }}
             >
-              <Box tag="div">
+              <Box
+                tag="div"
+                styleSheet={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'end'
+                }}
+              >
                 <Image
                   styleSheet={{
-                    width: '20px',
-                    height: '20px',
+                    width: '30px',
+                    height: '30px',
                     borderRadius: '50%',
                     display: 'inline-block',
                     marginRight: '8px'
                   }}
-                  src={`https://github.com/vanessametonini.png`}
+                  src={`https://github.com/${mensagem.from}.png`}
                 />
                 <Text
                   tag="strong"
@@ -219,7 +256,7 @@ function MessageListRender({ mensagens, handleDelete }) {
                   styleSheet={{
                     fontSize: '10px',
                     fontWeight: 'bold',
-                    color: '#FFF',
+                    color: appConfig.theme.colors.neutrals['000'],
                     width: '30px',
                     height: '0px',
                     cursor: 'pointer',
@@ -230,7 +267,22 @@ function MessageListRender({ mensagens, handleDelete }) {
                 </Text>
               </Box>
             </Box>
-            {mensagem.message}
+            <Text
+              tag="p"
+              styleSheet={{
+                display: 'flex',
+                width: '100%',
+                height: '40px',
+                borderRadius: '5px',
+                padding: '10px',
+                backgroundColor: appConfig.theme.colors.neutrals[500],
+                alignItems: 'center',
+                fontFamily: 'VT323, monospace',
+                fontSize: '1.275rem'
+              }}
+            >
+              {mensagem.message}
+            </Text>
           </Text>
         )
       })}
