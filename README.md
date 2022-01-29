@@ -1,10 +1,15 @@
-# Imersão React
+# Imersão React - Alura 2022
 
 ### Aula 1: Pixel Chat: Criando o nosso projeto Aluracord
 
 Começando com React criando área de login no Aluracord, criando tudo do ZERO: desde o package.json até os arquivos bases do Next.js para iniciar nosso projeto e ter o CSS in JS com styled-jsx para cuidar da camada de estilo da nossa aplicação.
 
 - [x] Iniciar um projeto Next.js;
+
+```
+yarn create next-app
+```
+
 - [x] Criar components com React usando CSS in JS;
 - [x] Estrutura inicial de um projeto Next.js;
 - [x] Passar propriedades para components;
@@ -103,3 +108,23 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
     />
   )}
 ```
+
+## Aula 5: Adicionando suporte para Stickers
+
+Adicionar o envio de sticker e renderizar a mensagem ou a imagem no chat
+
+```
+{mensagem.message.startsWith(':sticker:') ? (
+  <Image
+     src={mensagem.message.replace(':sticker:', '')}
+    styleSheet={{ maxHeight: '150px' }}
+  />
+) : (
+   mensagem.message
+)}
+
+```
+
+---
+
+desenvolvido por fernandoprestes durante a Imersão React 4 Alura - 2022
