@@ -28,7 +28,7 @@ export default function Home() {
   function handleSubmit(event) {
     event.preventDefault()
     if (!username) return
-    router.push('/chat')
+    router.push(`/chat?username=${username}`)
   }
 
   return (
@@ -95,7 +95,7 @@ export default function Home() {
                 marginBottom: '5px',
                 letterSpacing: '1px',
                 fontFamily: 'Press Start 2P, cursive',
-                color: appConfig.theme.colors.neutrals[300],
+                color: appConfig.theme.colors.neutrals[300]
               }}
             >
               entre com seu usuário do github

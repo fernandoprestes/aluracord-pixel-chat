@@ -3,26 +3,46 @@ import { useEffect, useState } from 'react'
 import appConfig from '../config.json'
 import { createClient } from '@supabase/supabase-js'
 import { Skeleton } from '../components/Skeleton'
+import { useRouter } from 'next/router'
+import { ButtonSendSticker } from './../components/ButtonSendStickes'
 
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+function listenerMessageInRealTime(addMsg) {
+  return supabaseClient
+    .from('messages')
+    .on('INSERT', resp => {
+      addMsg(resp.new)
+    })
+    .subscribe()
+}
+
 export default function Chat() {
   const [message, setMessage] = useState('')
   const [messageList, setMessageList] = useState([])
+
   const [loadingSkeleton, setLoadingSkeleton] = useState(true)
+  const router = useRouter()
+
+  const { username } = router.query
 
   useEffect(() => {
     getListMessage()
+    listenerMessageInRealTime(newMessage => {
+      setMessageList(currentMessageList => {
+        return [newMessage, ...currentMessageList]
+      })
+    })
   }, [])
 
   function getListMessage() {
     supabaseClient
       .from('messages')
       .select('*')
-      .order('id', { ascending: false })
+      .order('created_at', { ascending: false })
       .then(({ data }) => {
         setMessageList(data)
         setTimeout(() => {
@@ -31,21 +51,23 @@ export default function Chat() {
       })
   }
 
-  function sendNewMessage() {
+  function sendNewMessage(newMessage) {
     const messages = {
-      from: 'fernandoprestes',
-      message: message
+      from: username,
+      message: newMessage
     }
+    console.log(messages)
     supabaseClient
       .from('messages')
       .insert([messages])
       .then(({ data }) => {
-        setMessageList([data[0], ...messageList])
+        // setMessageList([data[0], ...messageList])
       })
   }
 
-  function handleNewMessage() {
-    sendNewMessage()
+  function handleNewMessage(newMessage) {
+    console.log(newMessage)
+    sendNewMessage(newMessage)
     setMessage('')
   }
 
@@ -124,22 +146,37 @@ export default function Chat() {
               borderRadius: '5px',
               padding: '6px 8px',
               backgroundColor: appConfig.theme.colors.neutrals[800],
-              marginRight: '12px',
+              marginRight: '6px',
               color: appConfig.theme.colors.neutrals[200],
               fontSize: '1.275rem'
             }}
           />
-          <Button
-            id="btn"
-            onClick={handleNewMessage}
-            variant="tertiary"
-            colorVariant="neutral"
-            label="OK"
+          <Box
+            tag="div"
             styleSheet={{
-              height: '60px',
-              marginBottom: '10px'
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '5px'
             }}
-          />
+          >
+            <ButtonSendSticker
+              onStickerClick={sticker => {
+                handleNewMessage(`:sticker:${sticker}`)
+              }}
+            />
+            <Button
+              id="btn"
+              onClick={() => handleNewMessage(message)}
+              variant="tertiary"
+              colorVariant="neutral"
+              label="OK"
+              styleSheet={{
+                height: '60px',
+                marginBottom: '10px'
+              }}
+            />
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -288,7 +325,7 @@ function MessageListRender({ mensagens, handleDelete }) {
               styleSheet={{
                 display: 'flex',
                 width: '100%',
-                height: '40px',
+                minHeight: '40px',
                 borderRadius: '5px',
                 padding: '10px',
                 backgroundColor: appConfig.theme.colors.neutrals[500],
@@ -297,7 +334,14 @@ function MessageListRender({ mensagens, handleDelete }) {
                 fontSize: '1.275rem'
               }}
             >
-              {mensagem.message}
+              {mensagem.message.startsWith(':sticker:') ? (
+                <Image
+                  src={mensagem.message.replace(':sticker:', '')}
+                  styleSheet={{ maxHeight: '150px' }}
+                />
+              ) : (
+                mensagem.message
+              )}
             </Text>
           </Text>
         )
