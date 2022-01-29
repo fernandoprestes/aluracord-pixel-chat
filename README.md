@@ -60,6 +60,7 @@ Criar a estrutura do nosso chat e fazer ele funcionar inicialmente sem nenhum Ba
 ```
 setMessageList([messages, ...messageList])
 ```
+
 - [x] Enviar mensagem com o botão
 - [x] Colocar um botão para apagar mensagem
 
@@ -73,4 +74,32 @@ function handleDelete(event) {
 
     setMessageList(newArrMsg)
   }
+```
+
+## Aula 4: Integrando com o Supabase.io
+
+Integrar com o [Supabase](https://supabase.com/)! Uma ferramenta de "Back-End as a Service" que vai nos ajudar a ter um banco de dados real time para guardar as mensagens do nosso chat.
+
+- [x] Supabase
+
+```
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+```
+
+- [x] useEffect no React
+- [x] Adição de Skeleton de loading
+
+```
+  {loadingSkeleton ? (
+    <Skeleton />
+  ) : (
+    <MessageListRender
+      mensagens={messageList}
+      handleDelete={handleDelete}
+    />
+  )}
 ```
